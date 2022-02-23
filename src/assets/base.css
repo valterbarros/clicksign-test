@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
 *,
 *::before,
 *::after {
@@ -5,8 +7,110 @@
   margin: 0;
   position: relative;
   font-weight: normal;
+  padding: 0;
+  margin: 0;
 }
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: Roboto sans-serif, Arial, Helvetica;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+/* vars */
+:root {
+  --default-background-color: #f8f9fd;
+  --grey1: #e4e7f4;
+  --grey2: #9198af;
+  --grey3: #c0c3d2;
+  --grey4: #e1e1e1; 
+  --light-yellowish-green: #dbff90;
+  --orange-light: #fa7268;
+}
+
+.new-button {
+  appearance: none;
+  padding: 1rem;
+  background: var(--light-yellowish-green);
+  color: var(--orange-light);
+  border: none;
+  border-radius: 2rem;
+  font-size: 0.88rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 0 0.5px rgba(0, 0, 0, 0.08), inset 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 2px 4px 0.5px rgba(0, 0, 0, 0.16);
+  cursor: pointer;
+}
+
+.action-button {
+  appearance: none;
+  padding: 0.5rem 1rem;
+  background: var(--orange-light);
+  color: white;
+  border: none;
+  border-radius: 2rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.action-button.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.cancel-button {
+  appearance: none;
+  padding: 0.5rem 1rem;
+  color: var(--orange-light);
+  background: white;
+  border: none;
+  border-radius: 2rem;
+  font-size: 0.88rem;
+  cursor: pointer;
+}
+
+.vertical-align-bottom {
+  vertical-align: bottom;
+}
+
+input[type="search"] {
+  border: none;
+  background: var(--grey1);
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+}
+
+input[type="search"]::placeholder {
+  color: var(--grey2);
+}
+
+input:not([type="search"]) {
+  border: 0.1rem solid var(--grey3);
+  border-radius: 0.3rem;
+  padding: 0.5rem;
+}
+
+/* Helpers */
+
+.font-size-12 {
+  font-size: 0.88rem;
+}
+
+.font-size-13 {
+  font-size: 0.8125rem;
+}
+
+.font-size-14 {
+  font-size: 0.875rem;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.mb-10 {
+  margin-bottom: 1rem;
 }
