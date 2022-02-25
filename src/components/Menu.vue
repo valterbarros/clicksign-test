@@ -3,6 +3,10 @@
     <div class="wrapper">
       <nav class="menu-nav">
         <img class="logo" src="@/assets/ic-logo.svg" alt="">
+        <button class="new-button minor" @click="handleClick">
+          <img class="vertical-align-bottom" src="@/assets/ic-plus.svg" alt="plus icon">
+          Criar contato
+        </button>
         <div class="search-container">
           <input class="search-input" type="search" placeholder="Buscar...">
         </div>
@@ -12,7 +16,13 @@
 </template>
 
 <script>
-  export default {}
+  export default {
+    methods: {
+      handleClick() {
+        this.emitter.emit('toggleModal-create-modal', true);
+      }
+    }
+  }
 </script>
 
 <style scoped>

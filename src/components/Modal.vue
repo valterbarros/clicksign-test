@@ -1,22 +1,34 @@
 <template>
-  <Transition>
-    <div class="backdrop" v-if="isOpen">
+  <Transition v-show="isOpen">
+    <div class="backdrop">
       <div class="container">
         <div class="modal-header">
           <h1 class="title">{{ title }}</h1>
         </div>
         <hr class="line">
         <div class="modal-body">
-          <form action="#" @input="handleInput($event)">
-            <slot></slot>
+          <form
+            :id="'main-form' + id"
+            action="#"
+            @input="handleInput($event)"
+            ref="mainForm"
+            @submit.prevent="handleSubmit"
+          >
+            <slot name="inputs"></slot>
           </form>
+          <slot name="message"></slot>
         </div>
         <hr class="line">
         <div class="modal-footer">
-          <button class="cancel-button" @click="$emit('toggleModal', false)">
+          <button class="cancel-button" @click="isOpen = false">
             Cancelar
           </button>
-          <button class="action-button" :class="[isValid ? '' : 'disabled']" @click="handleConfirm">
+          <button
+            type="submit"
+            :form="'main-form' + id"
+            class="action-button"
+            :class="[isEdit || !thereIsInput || isValid ? '' : 'disabled']"
+          >
             {{ action }}
           </button>
         </div>
@@ -30,25 +42,47 @@
     data () {
       return {
         isValid: false,
-        currentTime: -1
+        currentTime: -1,
+        isOpen: false,
       }
     },
+    mounted() {
+      this.emitter.on(`toggleModal-${this.id}`, (e) => {
+        this.isOpen = e
+      })
+      document.addEventListener('keyup', this.escapeModal.bind(this));
+    },
     props: {
+      id: String,
       title: String,
       action: String,
-      isOpen: Boolean,
-      dataContact: Object
+      actionFn: Function,
+      thereIsInput: Boolean,
+      isEdit: {
+        type: Boolean,
+        default: false
+      }
     },
     methods: {
+      escapeModal(e) {
+        if (e.code === 'Escape') {
+          this.isOpen = false;
+        }
+      },
       handleInput(e) {
         const { currentTarget } = e
         clearTimeout(this.currentTime)
-        this.currentTime = setTimeout(() => {
+        this.currentTime = setTimeout(_ => {
           this.isValid = currentTarget.checkValidity()
         }, 200)
       },
-      handleConfirm() {
-        console.log('confirm');
+      async handleSubmit() {
+        try {
+          await this.actionFn();
+          this.isOpen = false;
+        } catch (e) {
+          console.log('[db-error]', e);
+        }
       }
     }
   }
