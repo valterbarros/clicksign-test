@@ -1,11 +1,13 @@
 <template>
   <div class="container">
-    <template v-if="!this.contacts.length">
+    <template v-if="!store.contacts.length">
       <div class="empty-container">
-        <img class="book" src="@/assets/ic-book.svg" alt="">
-        <p class="empty-message">Nenhum contato foi criado ainda.</p>
+        <img class="book" src="@/assets/icons/ic-book.svg" alt="book icon">
+        <p class="empty-message">
+          Nenhum contato foi criado ainda.
+        </p>
         <button class="new-button" @click="handleToggleModal">
-          <img class="vertical-align-bottom" src="@/assets/ic-plus.svg" alt="plus icon">
+          <img class="vertical-align-bottom" src="@/assets/icons/ic-plus.svg" alt="plus icon">
           Criar contato
         </button>
       </div>
@@ -27,10 +29,11 @@
         <div class="data-body font-size-14">
           <div
             class="data-item"
-            :class="[featured ? 'featured' : '']"
-            v-for="contact of contacts"
+            :class="[welcomeStore.newContactId === contact.id ? 'featured' : '']"
+            v-for="contact of store.contacts"
+            :key="contact.id"
           >
-            <span class="badge" :style="getColorStyle()">
+            <span class="badge" :style="welcomeStore.getColorStyle()">
               {{contact?.name?.substring(0, 1)}}
             </span>
             <span class="item name">{{contact.name}}</span>
@@ -38,10 +41,10 @@
             <span class="item">{{contact.phone}}</span>
             <span class="action">
               <button @click="handleEdit(contact.id)" class="edit">
-                <img src="@/assets/ic-edit.svg" alt="edit">
+                <img src="@/assets/icons/ic-edit.svg" alt="edit icon">
               </button>
               <button @click="handleDelete(contact.id)" class="delete">
-                <img src="@/assets/ic-delete.svg" alt="delete">
+                <img src="@/assets/icons/ic-delete.svg" alt="delete icon">
               </button>
             </span>
           </div>
@@ -52,59 +55,35 @@
 </template>
 
 <script>
-  import { getConn, getAll } from '@/services/storage'
-  getConn()
+  import { store, welcomeStore, modalStore } from '@/services/store'
 
   export default {
     async mounted() {
-      this.contacts = await getAll();
-      this.emitter.on('contacts:updated', async () => {
-        this.contacts = await getAll();
-      })
-      this.emitter.on('contacts:created', async () => {
-        this.featured = true
-        clearTimeout(this.currentTime)
-        this.currentTime = setTimeout(_ => {
-          this.featured = false
-        }, 10000)
-      })
+      this.store.loadContacts()
     },
     data() {
       return {
-        colors: [
-          '#fa8d68',
-          '#90d26c',
-          '#68a0fa',
-          '#fab668',
-          '#8368fa',
-          '#fa68b5',
-          '#5fe2c4',
-          '#f55a5a'
-        ],
-        colorIndex: 0,
-        contacts: [],
         featured: false,
-        currentTime: -1
+        store,
+        welcomeStore,
+        modalStore,
+        modalStore
       }
     },
     methods: {
-      getColorStyle() {
-        if (this.colorIndex >= this.colors.length) {
-          this.colorIndex = 0;
-        }
-        this.colorIndex += 1;
-        return { background: this.colors[this.colorIndex] }
-      },
       handleEdit(id) {
-        this.emitter.emit('toggleModal-edit-modal', true)
-        this.emitter.emit('editClicked', id)
+        this.modalStore.setModalId('edit-modal')
+        this.modalStore.setToggleModal(true)
+        this.modalStore.fillEditData(id)
       },
-      async handleDelete (id) {
-        this.emitter.emit('toggleModal-delete-modal', true)
-        this.emitter.emit('deleteClicked', id)
+      handleDelete (id) {
+        this.modalStore.setModalId('delete-modal')
+        this.modalStore.setToggleModal(true)
+        this.modalStore.fillDeleteId(id)
       },
       handleToggleModal() {
-        this.emitter.emit('toggleModal-create-modal', true)
+        this.modalStore.setModalId('create-modal')
+        this.modalStore.setToggleModal(true)
       }
     }
   }
@@ -125,18 +104,18 @@
   }
 
   .data-head {
-    background: white;
+    background: var(--white);
     border: 0.09rem solid var(--grey4);
     border-bottom: none;
     padding: 1rem 1rem 0.5rem 0;
     display: flex;
     justify-content: space-between;
-    color: var(--grey2);
     border-top-right-radius: 0.3rem;
     border-top-left-radius: 0.3rem;
   }
 
   .data-head .item {
+    color: var(--grey2);
     flex: 1 25.555%;
   }
 
@@ -149,7 +128,7 @@
   }
 
   .data-item {
-    background: white;
+    background: var(--white);
     border: 0.09rem solid var(--grey4);
     padding: 0.75rem 1rem 0.75rem 0;
     display: flex;
@@ -178,20 +157,20 @@
 
   .data-item .action {
     flex: 1 2%;
+    text-align: right;
   }
 
   .badge {
     border-radius: 50%;
-    background: hsla(0, 100%, 50%, 1);
     padding-top: 0.2rem;
     width: 1.5rem;
     height: 1.5rem;
-    color: white;
+    color: var(--white);
     display: inline-block;
     text-align: center;
     position: absolute;
     top: 0.6rem;
-    left: 0.3rem;
+    left: 0.5rem;
     flex: 1 2.93rem;
     text-transform: uppercase;
   }

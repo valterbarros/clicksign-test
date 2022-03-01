@@ -24,6 +24,7 @@ body {
 /* vars */
 :root {
   --default-background-color: #f8f9fd;
+  --backdrop-black: rgba(0, 0, 0, 0.4);
   --grey1: #e4e7f4;
   --grey2: #9198af;
   --grey3: #c0c3d2;
@@ -32,6 +33,11 @@ body {
   --dark1: #2a2d3b;
   --orange-light: #fa7268;
   --light-pink: #fff3f2;
+  --white: #fff;
+}
+
+:where(p, span, label, input) {
+  color: var(--dark1);
 }
 
 .new-button {
@@ -42,7 +48,9 @@ body {
   border: none;
   border-radius: 2rem;
   font-size: 0.88rem;
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16), 0 0 0 0.5px rgba(0, 0, 0, 0.08), inset 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 2px 4px 0.5px rgba(0, 0, 0, 0.16);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16),
+    0 0 0 0.5px rgba(0, 0, 0, 0.08),
+    inset 0 0 0 0.5px rgba(0, 0, 0, 0.08), 0 2px 4px 0.5px rgba(0, 0, 0, 0.16);
   cursor: pointer;
 }
 
@@ -54,7 +62,7 @@ body {
   appearance: none;
   padding: 0.5rem 1rem;
   background: var(--orange-light);
-  color: white;
+  color: var(--white);
   border: none;
   border-radius: 2rem;
   font-size: 0.88rem;
@@ -71,7 +79,7 @@ body {
   appearance: none;
   padding: 0.5rem 1rem;
   color: var(--orange-light);
-  background: white;
+  background: var(--white);
   border: none;
   border-radius: 2rem;
   font-size: 0.88rem;
@@ -97,6 +105,10 @@ input:not([type="search"]) {
   border: 0.1rem solid var(--grey3);
   border-radius: 0.3rem;
   padding: 0.5rem;
+}
+
+abbr[title="required"] {
+  color: var(--orange-light);
 }
 
 /* Helpers */

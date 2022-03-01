@@ -10,10 +10,16 @@
     :thereIsInput="true"
   >
     <template v-slot:inputs>
-      <label class="font-size-12" for="name">Nome:</label> <br>
+      <label class="font-size-12" for="name">
+        Nome:
+        <abbr title="required">*</abbr>
+      </label> <br>
       <input v-model="newContact.name" class="w-100 mb-10" id="name" type="text" required>
       <br>
-      <label class="font-size-12" for="email">Email:</label> <br>
+      <label class="font-size-12" for="email">
+        Email:
+        <abbr title="required">*</abbr>
+      </label> <br>
       <input v-model="newContact.email" class="w-100 mb-10" type="email" id="email" required>
       <br>
       <label class="font-size-12" for="phone">Telefone:</label> <br>
@@ -30,14 +36,20 @@
     isEdit
   >
     <template v-slot:inputs>
-      <label class="font-size-12" for="name">Nome:</label> <br>
-      <input v-model="editContact.name" class="w-100 mb-10" id="name" type="text" required>
+      <label class="font-size-12" for="name">
+        Nome:
+        <abbr title="required">*</abbr>
+      </label> <br>
+      <input v-model="modalStore.editData.name" class="w-100 mb-10" id="name" type="text" required>
       <br>
-      <label class="font-size-12" for="email">Email:</label> <br>
-      <input v-model="editContact.email" class="w-100 mb-10" type="email" id="email" required>
+      <label class="font-size-12" for="email">
+        Email:
+        <abbr title="required">*</abbr>
+      </label> <br>
+      <input v-model="modalStore.editData.email" class="w-100 mb-10" type="email" id="email" required>
       <br>
       <label class="font-size-12" for="phone">Telefone:</label> <br>
-      <input v-model="editContact.phone" type="text" id="phone">
+      <input v-model="modalStore.editData.phone" type="text" id="phone">
     </template>
   </Modal>
 
@@ -58,18 +70,15 @@
   import Modal from '@/components/Modal.vue'
   import { RouterLink, RouterView } from 'vue-router'
   import Menu from '@/components/Menu.vue'
-  import { getConn, getById, insert, update, deleteById } from '@/services/storage'
+  import { getConn } from '@/services/storage'
   getConn()
+  import { store, modalStore } from '@/services/store'
 
   export default {
     components: {
-    Modal,
-    Menu,
-    RouterView
-},
-    async mounted() {
-      this.emitter.on('editClicked', id => this.fillEditContact(id))
-      this.emitter.on('deleteClicked', id => this.fillDelContactId(id))
+      Modal,
+      Menu,
+      RouterView
     },
     data () {
       return {
@@ -78,41 +87,26 @@
           email: '',
           phone: ''
         },
-        editContact: {
-          id: -1,
-          name: '',
-          email: '',
-          phone: ''
-        },
-        contractDelId: -1
+        store,
+        modalStore
       }
     },
     methods: {
-      async fillEditContact(id) {
-        this.editContact = await getById(id)
-      },
-      async fillDelContactId(id) {
-        this.contractDelId = id
-      },
       async createModalAction() {
-        await insert({...this.newContact})
-        this.emitter.emit('contacts:updated')
-        this.emitter.emit('contacts:created')
+        this.store.newContact({...this.newContact})
       },
       async editModalAction() {
-        await update({...this.editContact})
-        this.emitter.emit('contacts:updated')
+        this.store.updateContact({...this.modalStore.editData})
       },
       async deleteModalAction() {
-        await deleteById(this.contractDelId)
-        this.emitter.emit('contacts:updated')
+        this.store.deleteContact(this.modalStore.deleteId)
       }
     }
   }
 </script>
 
 <style>
-@import '@/assets/base.css';
+@import '@/assets/css/base.css';
 
 html {
   background-color: var(--default-background-color);

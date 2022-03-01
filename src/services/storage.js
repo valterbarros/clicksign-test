@@ -31,11 +31,18 @@ async function getById(id) {
   return await dbConn.contacts.get({id})
 }
 
+async function search(query) {
+  return await dbConn.contacts.filter((contact) => {
+    return contact.name.includes(query)
+  }).reverse().toArray()
+}
+
 export {
   getConn,
   insert,
   getAll,
   getById,
   update,
-  deleteById
+  deleteById,
+  search
 }

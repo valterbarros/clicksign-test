@@ -2,13 +2,13 @@
   <header class="menu">
     <div class="wrapper">
       <nav class="menu-nav">
-        <img class="logo" src="@/assets/ic-logo.svg" alt="">
+        <img class="logo" src="@/assets/icons/ic-logo.svg" alt="">
         <button class="new-button minor" @click="handleClick">
-          <img class="vertical-align-bottom" src="@/assets/ic-plus.svg" alt="plus icon">
+          <img class="vertical-align-bottom" src="@/assets/icons/ic-plus.svg" alt="plus icon">
           Criar contato
         </button>
         <div class="search-container">
-          <input class="search-input" type="search" placeholder="Buscar...">
+          <input @input="handleSearch($event.target.value)" class="search-input" type="search" placeholder="Buscar...">
         </div>
       </nav>
     </div>
@@ -16,10 +16,22 @@
 </template>
 
 <script>
+  import { store, modalStore } from '@/services/store'
+
   export default {
+    data() {
+      return {
+        store,
+        modalStore
+      }
+    },
     methods: {
       handleClick() {
-        this.emitter.emit('toggleModal-create-modal', true);
+        this.modalStore.setModalId('create-modal');
+        this.modalStore.setToggleModal(true)
+      },
+      async handleSearch(query) {
+        this.store.searchContacts(query)
       }
     }
   }
@@ -27,7 +39,8 @@
 
 <style scoped>
   .menu {
-    padding: 1rem;
+    padding: 1rem 1rem 0 1rem;
+    margin-bottom: 2rem;
   }
 
   .menu-nav {
@@ -37,6 +50,7 @@
 
   .search-input {
     width: 100%;
+    padding-right: 2rem;
   }
 
   .search-container {
@@ -44,7 +58,7 @@
     width: 70%;
   }
   .search-container::after {
-    content: url('@/assets/ic-search.svg');
+    content: url('@/assets/icons/ic-search.svg');
     display: inline-block;
     position: absolute;
     top: 0.5rem;

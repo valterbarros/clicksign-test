@@ -1,6 +1,6 @@
 <template>
-  <Transition v-show="isOpen">
-    <div class="backdrop">
+  <Transition v-show="modalStore.toggleModal && id === modalStore.modalId">
+    <div class="backdrop" @click.self="modalStore.setToggleModal(false)">
       <div class="container">
         <div class="modal-header">
           <h1 class="title">{{ title }}</h1>
@@ -20,14 +20,14 @@
         </div>
         <hr class="line">
         <div class="modal-footer">
-          <button class="cancel-button" @click="isOpen = false">
+          <button class="cancel-button" @click="modalStore.setToggleModal(false)">
             Cancelar
           </button>
           <button
             type="submit"
             :form="'main-form' + id"
             class="action-button"
-            :class="[isEdit || !thereIsInput || isValid ? '' : 'disabled']"
+            :class="[!thereIsInput || isValid ? '' : 'disabled']"
           >
             {{ action }}
           </button>
@@ -38,19 +38,19 @@
 </template>
 
 <script>
+  import { modalStore } from '@/services/store'
+
   export default {
     data () {
       return {
-        isValid: false,
+        isValid: this.isEdit,
         currentTime: -1,
         isOpen: false,
+        modalStore
       }
     },
     mounted() {
-      this.emitter.on(`toggleModal-${this.id}`, (e) => {
-        this.isOpen = e
-      })
-      document.addEventListener('keyup', this.escapeModal.bind(this));
+      this.escapeModalHandler();
     },
     props: {
       id: String,
@@ -64,11 +64,6 @@
       }
     },
     methods: {
-      escapeModal(e) {
-        if (e.code === 'Escape') {
-          this.isOpen = false;
-        }
-      },
       handleInput(e) {
         const { currentTarget } = e
         clearTimeout(this.currentTime)
@@ -79,9 +74,17 @@
       async handleSubmit() {
         try {
           await this.actionFn();
-          this.isOpen = false;
+          this.modalStore.setToggleModal(false)
         } catch (e) {
           console.log('[db-error]', e);
+        }
+      },
+      escapeModalHandler() {
+        document.addEventListener('keyup', this.escapeModal.bind(this));
+      },
+      escapeModal(e) {
+        if (e.code === 'Escape') {
+          this.modalStore.setToggleModal(false)
         }
       }
     }
@@ -90,14 +93,13 @@
 
 <style scoped>
   .backdrop {
-    background: rgba(0, 0, 0, 0.4);
+    background: var(--backdrop-black);
     position: absolute;
     inset: 0;
     z-index: 1;
     display: flex;
-    align-content: stretch;
     justify-content: center;
-    align-items: center;
+    align-items: flex-start;
     height: 100vh;
   }
 
@@ -108,6 +110,7 @@
     margin: 0 auto;
     padding: 1rem;
     border-radius: 1rem;
+    margin-top: 15rem;
   }
 
   .title {
