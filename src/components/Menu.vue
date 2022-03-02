@@ -3,7 +3,7 @@
     <div class="wrapper">
       <nav class="menu-nav">
         <img class="logo" src="@/assets/icons/ic-logo.svg" alt="">
-        <button class="new-button minor" @click="handleClick">
+        <button class="new-button minor create-contact" @click="handleClick">
           <img class="vertical-align-bottom" src="@/assets/icons/ic-plus.svg" alt="plus icon">
           Criar contato
         </button>
@@ -60,7 +60,12 @@
 
   .search-container {
     display: inline-block;
-    width: 70%;
+    flex: 1;
+    margin-left: 2rem;
+  }
+
+  .create-contact {
+    margin-left: 2rem;
   }
   .search-container::after {
     content: url('@/assets/icons/ic-search.svg');
