@@ -14,16 +14,16 @@
         Nome:
         <abbr title="required">*</abbr>
       </label> <br>
-      <input v-model="newContact.name" class="w-100 mb-10" id="name" type="text" required>
+      <input v-model="newContact.name" class="w-100 mb-10" id="name" type="text" required placeholder="your name">
       <br>
       <label class="font-size-12" for="email">
         Email:
         <abbr title="required">*</abbr>
       </label> <br>
-      <input v-model="newContact.email" class="w-100 mb-10" type="email" id="email" required>
+      <input v-model="newContact.email" class="w-100 mb-10" type="email" id="email" required placeholder="your email">
       <br>
       <label class="font-size-12" for="phone">Telefone:</label> <br>
-      <input v-model="newContact.phone" type="text" id="phone">
+      <input type="tel" v-mask="'(##) #####-####'" v-model="newContact.phone" id="phone" placeholder="(99) 12322-3232">
     </template>
   </Modal>
 
@@ -40,16 +40,16 @@
         Nome:
         <abbr title="required">*</abbr>
       </label> <br>
-      <input v-model="modalStore.editData.name" class="w-100 mb-10" id="name" type="text" required>
+      <input v-model="modalStore.editData.name" class="w-100 mb-10" id="name" type="text" required placeholder="your name">
       <br>
       <label class="font-size-12" for="email">
         Email:
         <abbr title="required">*</abbr>
       </label> <br>
-      <input v-model="modalStore.editData.email" class="w-100 mb-10" type="email" id="email" required>
+      <input v-model="modalStore.editData.email" class="w-100 mb-10" type="email" id="email" required placeholder="your email">
       <br>
       <label class="font-size-12" for="phone">Telefone:</label> <br>
-      <input v-model="modalStore.editData.phone" type="text" id="phone">
+      <input type="tel" v-mask="'(##) #####-####'" v-model="modalStore.editData.phone" id="phone" placeholder="(99) 12322-3232">
     </template>
   </Modal>
 
@@ -73,6 +73,15 @@
   import { getConn } from '@/services/storage'
   getConn()
   import { store, modalStore } from '@/services/store'
+  import { mask } from 'vue-the-mask'
+
+  const newContactInitial = () => {
+    return {
+      name: '',
+      email: '',
+      phone: ''
+    }
+  }
 
   export default {
     components: {
@@ -80,13 +89,12 @@
       Menu,
       RouterView
     },
+    directives: {
+      mask
+    },
     data () {
       return {
-        newContact: {
-          name: '',
-          email: '',
-          phone: ''
-        },
+        newContact: newContactInitial(),
         store,
         modalStore
       }
@@ -94,6 +102,7 @@
     methods: {
       async createModalAction() {
         this.store.newContact({...this.newContact})
+        this.newContact = newContactInitial();
       },
       async editModalAction() {
         this.store.updateContact({...this.modalStore.editData})

@@ -75,6 +75,10 @@ body {
   cursor: not-allowed;
 }
 
+.action-button:focus {
+  outline: var(--grey4) solid 3px;
+}
+
 .cancel-button {
   appearance: none;
   padding: 0.5rem 1rem;

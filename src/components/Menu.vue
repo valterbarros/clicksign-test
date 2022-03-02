@@ -8,7 +8,12 @@
           Criar contato
         </button>
         <div class="search-container">
-          <input @input="handleSearch($event.target.value)" class="search-input" type="search" placeholder="Buscar...">
+          <input
+            @input="handleSearch($event.target.value)"
+            class="search-input"
+            type="search"
+            placeholder="Buscar..."
+          />
         </div>
       </nav>
     </div>

@@ -1,6 +1,13 @@
 <template>
-  <Transition v-show="modalStore.toggleModal && id === modalStore.modalId">
-    <div class="backdrop" @click.self="modalStore.setToggleModal(false)">
+  <Transition
+    @after-enter="onAfterEnter"
+  >
+    <div
+      v-show="modalStore.toggleModal && id === modalStore.modalId"
+      class="backdrop"
+      data-testid="backdrop"
+      @click.self="modalStore.setToggleModal(false)"
+    >
       <div class="container">
         <div class="modal-header">
           <h1 class="title">{{ title }}</h1>
@@ -20,12 +27,18 @@
         </div>
         <hr class="line">
         <div class="modal-footer">
-          <button class="cancel-button" @click="modalStore.setToggleModal(false)">
+          <button
+            class="cancel-button"
+            @click="modalStore.setToggleModal(false)"
+          >
             Cancelar
           </button>
           <button
-            type="submit"
+            data-testid="action-button"
             :form="'main-form' + id"
+            @click="handleClick"
+            type="submit"
+            ref="formButton"
             class="action-button"
             :class="[!thereIsInput || isValid ? '' : 'disabled']"
           >
@@ -45,7 +58,6 @@
       return {
         isValid: this.isEdit,
         currentTime: -1,
-        isOpen: false,
         modalStore
       }
     },
@@ -86,6 +98,16 @@
         if (e.code === 'Escape') {
           this.modalStore.setToggleModal(false)
         }
+      },
+      onAfterEnter() {
+        if (!this.thereIsInput) {
+          this.$refs.formButton.focus();
+        }
+      },
+      handleClick() {
+        const el = this.$refs.mainForm
+        const event = new Event('submit')
+        el.dispatchEvent(event)
       }
     }
   }

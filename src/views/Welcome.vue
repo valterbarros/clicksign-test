@@ -27,27 +27,29 @@
           <span class="action"></span>
         </div>
         <div class="data-body font-size-14">
-          <div
-            class="data-item"
-            :class="[welcomeStore.newContactId === contact.id ? 'featured' : '']"
-            v-for="contact of store.contacts"
-            :key="contact.id"
-          >
-            <span class="badge" :style="welcomeStore.getColorStyle()">
-              {{contact?.name?.substring(0, 1)}}
-            </span>
-            <span class="item name">{{contact.name}}</span>
-            <span class="item">{{contact.email}}</span>
-            <span class="item">{{contact.phone}}</span>
-            <span class="action">
-              <button @click="handleEdit(contact.id)" class="edit">
-                <img src="@/assets/icons/ic-edit.svg" alt="edit icon">
-              </button>
-              <button @click="handleDelete(contact.id)" class="delete">
-                <img src="@/assets/icons/ic-delete.svg" alt="delete icon">
-              </button>
-            </span>
-          </div>
+          <TransitionGroup name="list">
+            <div
+              class="data-item"
+              :class="[welcomeStore.newContactId === contact.id ? 'featured' : '']"
+              v-for="contact of store.contacts"
+              :key="contact.id"
+            >
+              <span class="badge" :style="welcomeStore.getColorStyle()">
+                {{contact?.name?.substring(0, 1)}}
+              </span>
+              <span class="item name">{{contact.name}}</span>
+              <span class="item">{{contact.email}}</span>
+              <span class="item">{{contact.phone}}</span>
+              <span class="action">
+                <button @click="handleEdit(contact.id)" class="edit">
+                  <img src="@/assets/icons/ic-edit.svg" alt="edit icon">
+                </button>
+                <button @click="handleDelete(contact.id)" class="delete">
+                  <img src="@/assets/icons/ic-delete.svg" alt="delete icon">
+                </button>
+              </span>
+            </div>
+          </TransitionGroup>
         </div>
       </div>
     </template>
@@ -63,7 +65,6 @@
     },
     data() {
       return {
-        featured: false,
         store,
         welcomeStore,
         modalStore,
@@ -194,5 +195,19 @@
 
   .data-item.featured:first-child {
     background: var(--light-pink);
+  }
+
+  .data-container {
+    overflow: hidden;
+  }
+
+  .list-enter-active,
+  .list-leave-active {
+    transition: transform 0.3s ease, opacity 0.3s ease;
+  }
+  .list-enter-from,
+  .list-leave-to {
+    opacity: 0;
+    transform: translateX(1.8rem);
   }
 </style>

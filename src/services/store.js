@@ -72,7 +72,6 @@ watch(() => store.contacts, (newV, oldV, cleanUp) => {
   const thereIsANewElementOnArray = !!oldV.length && newV.length > oldV.length && newV[0].isNew
   if (thereIsANewElementOnArray) {
     const contact = newV[0]
-    console.log(contact);
     welcomeStore.setNewContactId(contact.id)
     clearTimeout(currentTime.value)
     currentTime.value = setTimeout(_ => {
